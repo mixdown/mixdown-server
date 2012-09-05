@@ -1,0 +1,19 @@
+<html>
+<body>
+<p>Each test</p>
+<ul>
+	{{#each languages}} {{> tests.views.hello this}} {{/each}}
+</ul>
+
+<p>Range test</p>
+<ul>
+{{#range 10}} 
+	<li>key: {{key}}, value: {{value}}</li>  
+{{/range}}
+</ul>
+
+<p>ifeval test - 
+{{#ifeval "languages.spanish.hello == 'Hola'"}}Pass{{/ifeval}}
+</p>
+
+<p>def test - {{def languages.german.hello def="German Not Found"}}</p>

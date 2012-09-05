@@ -1,0 +1,41 @@
+{
+	"name": "mixdown-server",
+	"version": "0.1.0",
+	"main": "index",
+	"description": "Simple server for activiting a site.",
+	"keywords": [
+		"node",
+		"server",
+		"html"
+		],
+	"author": {
+		"name": "Vast",
+		"email": "vastjs-dev@vast.com",
+		"web": "http://vastdevblog.vast.com/"
+	}, 
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "git@git.vast.com:mixdown/server"
+	},
+	"directories": {
+		"tests": "tests"
+	},
+	"engines": {
+		"node": ">=0.8.0"
+	},
+	"scripts": {
+		"test": "node /tests/example.js"
+	},
+	"dependencies": {
+		"lodash": "*",
+		"broadway": "*"
+	},
+	"devDependencies": {
+		"pipeline-router": "*",
+		"broadway-handlebars": "*"
+	},
+	"optionalDependencies": {},
+	"homepage": "http://vastdevblog.vast.com/"
+}
+

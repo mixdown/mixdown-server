@@ -1,0 +1,39 @@
+{
+	"app": {
+		"plugins" :{
+			"hello": {
+				"module": "/tests/plugin.js",
+				"options": {}
+			},
+			"hello2": {
+				"module": "/tests/composite.js#api2",
+				"options": {}
+			},
+			"router": {
+				"module": "/tests/router.js",
+				"options": {}
+			}
+		}
+	},
+	"sites": [
+		{
+			"id": "mixdown",
+			"hostmap": [
+				"mixdown.local",
+				"127.0.0.1"
+			],
+			"plugins" :{
+				"view": {
+					"module": "broadway-handlebars",
+					"options": {
+						"optimize": false,
+						"development": true
+					}
+				}
+			}
+		}
+	],
+	"server": {
+	    "port": 8080
+	}
+}
