@@ -16,7 +16,7 @@
 	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "git@git.vast.com:mixdown/server"
+		"url": "git@github.com:mixdown/server"
 	},
 	"directories": {
 		"tests": "tests"
