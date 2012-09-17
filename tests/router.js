@@ -22,11 +22,11 @@ TestRouter.prototype.attach = function (options) {
 	            app.plugins.render('tests/views/index', data, function(err, html) {
 
 	            	if (err) {
-	            		res.writeHead(500, { 'Content-Type': 'text/plain' });
+	            		res.writeHead(500, app.plugins.headers({ 'Content-Type': 'text/plain' }));
 	            		res.end(err + err.stack);
 	            	}
 	            	else {
-		            	res.writeHead(200, { 'Content-Type': 'text/html' });
+		            	res.writeHead(200, app.plugins.headers({ 'Content-Type': 'text/html' }));
 						res.end(html);
 					}
 	            });
@@ -39,11 +39,11 @@ TestRouter.prototype.attach = function (options) {
 	            app.plugins.render('tests/views/index', data, function(err, html) {
 
 	            	if (err) {
-	            		res.writeHead(500, { 'Content-Type': 'text/plain' });
+	            		res.writeHead(500, app.plugins.headers({ 'Content-Type': 'text/plain' }));
 	            		res.end(err + err.stack);
 	            	}
 	            	else {
-		            	res.writeHead(200, { 'Content-Type': 'text/html' });
+		            	res.writeHead(200, app.plugins.headers({ 'Content-Type': 'text/html' }));
 						res.end(html);
 					}
 	            });

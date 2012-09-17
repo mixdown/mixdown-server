@@ -1,0 +1,12 @@
+{
+	"app": {
+		"plugins" :{
+			"headers": {
+				"module": "/tests/headers.js",
+				"options": {
+					"headers": { "mixdown-test": "override config" }
+				}
+			}
+		}
+	}
+}

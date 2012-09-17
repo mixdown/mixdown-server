@@ -12,6 +12,12 @@
 			"router": {
 				"module": "/tests/router.js",
 				"options": {}
+			},
+			"headers": {
+				"module": "/tests/headers.js",
+				"options": {
+					"headers": { "mixdown-test": "base config" }
+				}
 			}
 		}
 	},
@@ -19,7 +25,7 @@
 		{
 			"id": "mixdown",
 			"hostmap": [
-				"mixdown.local",
+				"localhost",
 				"127.0.0.1"
 			],
 			"plugins" :{

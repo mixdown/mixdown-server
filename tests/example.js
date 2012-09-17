@@ -1,12 +1,13 @@
 var mixdown = require('../index'),
-	serverConfig = new mixdown.Config();
+	serverConfig = new mixdown.Config(require("./server.json"));
 
 serverConfig.on('error', function(err) {
 	console.log(err);
 	process.exit();
 });
-debugger;
-serverConfig.init(require("./server.json"));
+
+serverConfig.env(require("./server-override.json"));
+serverConfig.init();
 
 // start server.  Sets up server, port, and starts the app.
 var server = new mixdown.Server(serverConfig);
