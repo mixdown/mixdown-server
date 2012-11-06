@@ -1,6 +1,6 @@
 {
 	"name": "mixdown-server",
-	"version": "0.2.0",
+	"version": "0.2.1",
 	"main": "index",
 	"description": "Simple server for activiting a site.",
 	"keywords": [
@@ -28,12 +28,14 @@
 		"test": "node tests/example.js"
 	},
 	"dependencies": {
-		"lodash": "0.8.2",
-		"broadway": "0.2.5"
+		"lodash": "0.9.1",
+		"broadway": "0.2.5",
+		"winston": "0.6.2"
 	},
 	"devDependencies": {
 		"pipeline-router": "*",
-		"broadway-handlebars": "*"
+		"broadway-handlebars": "*",
+		"tap": "*"
 	},
 	"optionalDependencies": {},
 	"homepage": "http://vastdevblog.vast.com/"
