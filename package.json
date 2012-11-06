@@ -1,6 +1,6 @@
 {
 	"name": "mixdown-server",
-	"version": "0.2.1",
+	"version": "0.2.2",
 	"main": "index",
 	"description": "Simple server for activiting a site.",
 	"keywords": [
@@ -30,7 +30,8 @@
 	"dependencies": {
 		"lodash": "0.9.1",
 		"broadway": "0.2.5",
-		"winston": "0.6.2"
+		"winston": "0.6.2",
+		"winston-syslog": "0.2.2"
 	},
 	"devDependencies": {
 		"pipeline-router": "*",
