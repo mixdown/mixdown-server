@@ -1,9 +1,9 @@
 var _ = require('lodash'),
-	VastLogger = require('../lib/logger'),
+	mixdownLogger = require('../lib/logger'),
 	tap = require('tap'),
 	test = tap.test;
 
-global.logger = VastLogger.create({
+global.logger = mixdownLogger.create({
 	"defaults": {
 		"handleExceptions": false,
       	"json": true,

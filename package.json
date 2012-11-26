@@ -28,8 +28,9 @@
 		"test": "node tests/example.js"
 	},
 	"dependencies": {
-		"lodash": "0.9.1",
+		"lodash": "0.10.0",
 		"broadway": "0.2.5",
+		"optimist": "0.3.4",
 		"winston": "0.6.2",
 		"winston-syslog": "0.2.2"
 	},

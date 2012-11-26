@@ -40,6 +40,24 @@
 		}
 	],
 	"server": {
-	    "port": 8080
+	    "port": 8080,
+	    "cluster": {
+	        "on": true,
+	        "workers": 2
+	    }, 
+	    "logger": {
+	    	"defaults": {
+	    		"handleExceptions": false,
+		      	"json": false,
+		      	"timestamp": true,
+		      	"colorize": true
+	    	},
+	    	"transports": [{
+	    		"transport": "Console",
+	    		"options": {
+	    			"handleExceptions": true
+	    		}
+			}]
+	    }
 	}
 }
