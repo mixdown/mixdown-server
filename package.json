@@ -1,6 +1,6 @@
 {
 	"name": "mixdown-server",
-	"version": "0.3.0",
+	"version": "0.3.1",
 	"main": "index",
 	"description": "Simple server for activiting a site.",
 	"keywords": [

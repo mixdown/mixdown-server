@@ -8,7 +8,7 @@ var MainFactory = require('../index').MainFactory,
 
 MainFactory.create({
 	packageJSON: require('../package.json'),
-	rootpath: path.resolve(__dirname)
+	rootpath: path.resolve(__dirname + '/unix-sockets')
 }, function(err, options) {
 
 	console.log(JSON.stringify(Object.keys(options)));
@@ -29,9 +29,12 @@ MainFactory.create({
 		t.end();
 	});
 
-	var homeurl = 'http://localhost:' + serverConfig.server.listen.port + '/';
+	var homeurl = {
+				socketPath: serverConfig.server.listen.path,
+				path: '/'
+			};
 
-	test('Request Home Page (worker: ' + process.pid + ') - ' + homeurl, function(t) {
+	test('Request Home Page (worker: ' + process.pid + ')', function(t) {
 		var gold = '<html> <body> <p>Each test</p> <ul> <li>Hola world (spanish)</li> <li>Bonjour world (french)</li> <li>Hello world (english)</li> </ul> <p>Range test</p> <ul> <li>key: 0, value: 0</li> <li>key: 1, value: 1</li> <li>key: 2, value: 2</li> <li>key: 3, value: 3</li> <li>key: 4, value: 4</li> <li>key: 5, value: 5</li> <li>key: 6, value: 6</li> <li>key: 7, value: 7</li> <li>key: 8, value: 8</li> <li>key: 9, value: 9</li> </ul> <p>ifeval test - Pass </p> <p>def test - German Not Found</p>';
 
 		var req = http.get(homeurl, function(res) {
@@ -64,4 +67,5 @@ MainFactory.create({
 
 });
 	
+
 

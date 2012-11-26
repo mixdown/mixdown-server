@@ -41,7 +41,8 @@
 	],
 	"server": {
 		"listen": {
-			"port": "8080"
+			"type": "unix",
+			"path": "/tmp/mixdown.sock"
 		},
 	    "cluster": {
 	        "on": true,
