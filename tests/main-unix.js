@@ -1,4 +1,5 @@
-var MainFactory = require('../index').MainFactory,
+var mixdown = require('../index'),
+	MainFactory = mixdown.MainFactory,
 	path = require('path'),
 	http = require('http'),
 	cluster	= require('cluster'),
@@ -8,7 +9,7 @@ var MainFactory = require('../index').MainFactory,
 
 MainFactory.create({
 	packageJSON: require('../package.json'),
-	rootpath: path.resolve(__dirname + '/unix-sockets')
+	serverConfig: new mixdown.Config(require( path.resolve(__dirname + '/unix-sockets/server.json')))
 }, function(err, options) {
 
 	console.log(JSON.stringify(Object.keys(options)));
