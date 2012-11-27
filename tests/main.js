@@ -3,13 +3,19 @@ var mixdown = require('../index'),
 	path = require('path'),
 	http = require('http'),
 	cluster	= require('cluster'),
+	serverConfig = new mixdown.Config(require(__dirname + '/server.json')),
 	tap = require('tap'),
 	test = tap.test;
 
+// wire up error event listeners before initializing config.
+serverConfig.on('error', function(err) {
+	console.info(err);
+});
+serverConfig.init();
 
 MainFactory.create({
 	packageJSON: require('../package.json'),
-	serverConfig: new mixdown.Config(require(__dirname + '/server.json'))
+	serverConfig: serverConfig
 }, function(err, options) {
 
 	console.log(JSON.stringify(Object.keys(options)));
