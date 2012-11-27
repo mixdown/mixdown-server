@@ -1,5 +1,4 @@
 var mixdown = require('../index'),
-	MainFactory = mixdown.MainFactory,
 	path = require('path'),
 	http = require('http'),
 	cluster	= require('cluster'),
@@ -13,10 +12,12 @@ serverConfig.on('error', function(err) {
 });
 serverConfig.init();
 
-MainFactory.create({
+var main = mixdown.MainFactory.create({
 	packageJSON: require('../package.json'),
 	serverConfig: serverConfig
-}, function(err, options) {
+});
+
+main.start(function(err, options) {
 
 	console.log(JSON.stringify(Object.keys(options)));
 
