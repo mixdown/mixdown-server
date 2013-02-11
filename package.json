@@ -1,13 +1,13 @@
 {
 	"name": "mixdown-server",
-	"version": "0.3.4",
+	"version": "0.3.5",
 	"main": "index",
 	"description": "Simple server for activiting a site.",
 	"keywords": [
 		"node",
 		"server",
 		"html"
-		],
+	],
 	"author": {
 		"name": "Vast",
 		"email": "vastjs-dev@vast.com",
