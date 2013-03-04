@@ -1,6 +1,6 @@
 {
 	"name": "mixdown-server",
-	"version": "0.3.5",
+	"version": "0.3.7",
 	"main": "index",
 	"description": "Simple server for activiting a site.",
 	"keywords": [
@@ -28,8 +28,8 @@
 		"test": "node tests/main.js"
 	},
 	"dependencies": {
-		"lodash": "0.10.0",
-		"broadway": "0.2.5",
+		"lodash": "1.0.1",
+		"broadway": "0.2.6",
 		"optimist": "0.3.4",
 		"winston": "0.6.2",
 		"winston-syslog": "0.2.2"
