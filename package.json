@@ -1,6 +1,6 @@
 {
 	"name": "mixdown-server",
-	"version": "0.3.7",
+	"version": "0.3.9",
 	"main": "index",
 	"description": "Simple server for activiting a site.",
 	"keywords": [
@@ -32,7 +32,7 @@
 		"broadway": "0.2.6",
 		"optimist": "0.3.4",
 		"winston": "0.6.2",
-		"winston-syslog": "0.2.2"
+		"winston-syslog": "git+https://github.com/vast-eng/winston-syslog.git"
 	},
 	"devDependencies": {
 		"pipeline-router": "*",
