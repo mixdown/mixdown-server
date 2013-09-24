@@ -1,18 +1,21 @@
-var _ = require('lodash'),
-  opt = require('optimist'),
-  util = require('util'),
-  cluster = require('cluster'),
-  mixdownServer = require('./lib/server.js');
+var _ = require('lodash');
+var opt = require('optimist')
+var util = require('util');
+var cluster = require('cluster');
+var mixdownServer = require('./lib/server.js');
+var path = require('path');
+var packageJSON = require(path.join(process.cwd(), '/package.json'));
 
 // Export the factory
-exports.create = function(options) {
-  var main = new Main(options);
+exports.create = function(mixdown, options) {
+  var main = new Main(mixdown, options);
 
+// placeholder for options for starting the server
   var argv = opt
     .alias('h', 'help')
     .alias('?', 'help')
     .describe('help', 'Display help')
-    .usage('Starts ' + main.packageJSON.name + ' framework for serving multiple sites.\n\nVersion: ' + main.packageJSON.version + '\nAuthor: ' + main.packageJSON.author)
+    .usage('Starts ' + packageJSON.name + ' framework for serving multiple sites.\n\nVersion: ' + packageJSON.version + '\nAuthor: ' + packageJSON.author)
     .alias('v', 'version')
     .describe('version', 'Display Mixdown application version.')
     .argv;
@@ -30,32 +33,33 @@ exports.create = function(options) {
   return main;
 };
 
-var Main = function(options) {
+var Main = function(mixdown, options) {
+
+  // instance attrs
   this.server = null;
-  this.mixdownConfig = options.mixdownConfig;
   this.workers = {};
   this.socket = null;
+
+  // passed configs.
+  this.mixdown = mixdown;
+  this.options = options;
 };
 
 Main.prototype.start = function(callback) {
   var that = this;
-  var mixdownConfig = this.mixdownConfig;
+  var mixdown = this.mixdown;
+
+  var logServerInfo = function(message) {
+    var hmap = _.map(mixdown.apps, function(app) { return _.pick(app, 'vhosts', 'id'); });
+    logger.info(message || 'Server Information. ', that.socket.address(), hmap);
+  };
 
   // this reload listener just logs the reload info.
-  mixdownConfig.on('reload', function(serverCfg) {
-    var hmap = [];
-    _.each(mixdownConfig.apps, function(app) { 
-      hmap.push({ 
-        hostmap: app.config.hostmap,
-        id: app.config.id
-      });
-    });
-    logger.info("Server configuration successfully reloaded " + util.inspect(that.socket.address()) + ". " + util.inspect(hmap) );
-  });
+  mixdown.on('reload', logServerInfo.bind(null, 'Mixdown reloaded.  '));
 
   var createServer = function(done) {
     // start server.  Sets up server, port, and starts the app.
-    that.server = new mdServer(mixdownConfig);
+    that.server = new mixdownServer(that.mixdown, that.options);
 
     that.server.start(function(err, data) {
       if (err) {
@@ -64,16 +68,7 @@ Main.prototype.start = function(callback) {
       }
       else {
         that.socket = data.socket;
-
-        var hmap = [];
-        _.each(mixdownConfig.apps, function(app) { 
-          hmap.push({ 
-            hostmap: app.config.hostmap,
-            id: app.config.id
-          });
-        });
-        logger.info("Server started successfully listening on " + util.inspect(that.socket.address()) + ". " + util.inspect(hmap) );
-
+        logServerInfo('Server started successfully.');
         done(err, that);
       }
     });
@@ -81,7 +76,7 @@ Main.prototype.start = function(callback) {
 
   // Start cluster.
   var children = this.workers;
-  var clusterConfig = mixdownConfig.main.cluster || {};
+  var clusterConfig = mixdown.main.cluster || {};
 
   if(clusterConfig.on){
     logger.info("Using cluster");
