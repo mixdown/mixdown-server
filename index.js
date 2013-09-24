@@ -32,7 +32,6 @@ exports.create = function(options) {
 
 var Main = function(options) {
   this.server = null;
-  this.packageJSON = options.packageJSON || {};
   this.mixdownConfig = options.mixdownConfig;
   this.workers = {};
   this.socket = null;

@@ -32,10 +32,6 @@
     "optimist": "~0.6.0"
   },
   "devDependencies": {
-    "pipeline-router": "*",
-    "broadway": "*",
-    "broadway-handlebars": "*",
-    "tap": "*"
   },
   "optionalDependencies": {},
   "homepage": "http://vastdevblog.vast.com/"
