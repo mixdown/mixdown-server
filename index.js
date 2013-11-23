@@ -45,6 +45,10 @@ var Main = function(mixdown, options) {
   this.options = options;
 };
 
+Main.prototype.stop = function(callback) {
+  throw new Error('stop() not implemented on server.  TODO.');
+};
+
 Main.prototype.start = function(callback) {
   var that = this;
   var mixdown = this.mixdown;
@@ -76,7 +80,7 @@ Main.prototype.start = function(callback) {
 
   // Start cluster.
   var children = this.workers;
-  var clusterConfig = mixdown.main.cluster || {};
+  var clusterConfig = mixdown.main.options.cluster || {};
 
   if(clusterConfig.on){
     logger.info("Using cluster");
@@ -108,12 +112,12 @@ Main.prototype.start = function(callback) {
               process.exit();
             }
             else {
-              process.nextTick(checkExit);   // keep polling for safe shutdown.
+              setImmediate(checkExit);   // keep polling for safe shutdown.
             }
           };
 
           // poll the master and exit when children are all gone.
-          process.nextTick(checkExit);
+          setImmediate(checkExit);
           
         });
 
