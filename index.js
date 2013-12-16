@@ -1,5 +1,4 @@
 var _ = require('lodash');
-var opt = require('optimist')
 var util = require('util');
 var cluster = require('cluster');
 var mixdownMaster = require('./lib/master.js');
@@ -8,34 +7,12 @@ var path = require('path');
 var packageJSON = require(path.join(process.cwd(), '/package.json'));
 
 // Export the factory
-exports.create = function(mixdown, options) {
+module.exports.create = function(mixdown, options) {
   var main = new Main(mixdown, options);
-
-// placeholder for options for starting the server
-  var argv = opt
-    .alias('h', 'help')
-    .alias('?', 'help')
-    .describe('help', 'Display help')
-    .usage('Starts ' + packageJSON.name + ' framework for serving multiple sites.\n\nVersion: ' + packageJSON.version + '\nAuthor: ' + packageJSON.author)
-    .alias('v', 'version')
-    .describe('version', 'Display Mixdown application version.')
-    .argv;
-
-  if(argv.help) {
-    opt.showHelp();
-    process.exit();
-  }
-
-  if(argv.version) {
-    console.log(packageJSON.version);
-    process.exit();
-  }
-
   return main;
 };
 
 var Main = function(mixdown, options) {
-
   // instance attrs
   this.server = null;
   this.workers = {};   // if this is a master, then we'll load this with child processes.
@@ -46,6 +23,7 @@ var Main = function(mixdown, options) {
 
   // passed configs.
   this.mixdown = mixdown;
+
   this.options = _.defaults(options || {}, {
     cluster: {
       on: false
@@ -53,16 +31,20 @@ var Main = function(mixdown, options) {
   });
 };
 
-var logServerInfo = function(message) {
-  var hmap = _.map(this.mixdown.apps, function(app) { return _.pick(app, 'vhosts', 'id'); });
-  logger.info(message || 'Server Information. ', this.socket.address(), hmap);
+var logServerInfo = function(server,message) {
+
+  var hmap = _.map(server.mixdown.apps, function(app){ 
+    return _.pick(app, 'vhosts', 'id'); 
+  });
+
+  logger.info(message || 'Server Information. ', server.server.address(), hmap);
 };
 
 Main.prototype.createMaster = function() {
   var self = this;
 
   // start server.  Sets up server, port, and starts the app.
-  self.master = new mixdownMaster(self.mixdown, self.options);
+  self.master = new mixdownMaster(self.workers, self.options);
 
   self.master.start(function(err, data) {
     if (err) {
@@ -72,7 +54,7 @@ Main.prototype.createMaster = function() {
     else {
       self.socket = data.socket;
       self.server = data.server;
-      logServerInfo.call(self, 'Server started successfully.');
+      logServerInfo(self, 'Server started successfully.');
       typeof(callback) === 'function' ? callback(err, self) : null;
     }
   });
@@ -86,25 +68,36 @@ Main.prototype.start = function(callback) {
   var self = this;
   var mixdown = this.mixdown;
 
-
   // this reload listener just logs the reload info.
-  mixdown.on('reload', logServerInfo.bind(this, 'Mixdown reloaded.  '));
+  mixdown.on('reload', function() {
+    logServerInfo(self, 'Mixdown reloaded. ');
+  });
 
   // Start cluster.
   var clusterConfig = mixdown.main.options.cluster || {};
 
   if(clusterConfig.on){
-    logger.info("Using cluster");
-
-    var numCPUs = clusterConfig.workers || require('os').cpus().length;
+    var numChidrenToSpawn = clusterConfig.workers || require('os').cpus().length;
 
     if(cluster.isMaster){
-      logger.info("Starting master with " + numCPUs + " CPUs");
+      logger.info("Using cluster");
+      //cluser is on, and this is the master!
+      logger.info("Starting master with " + numChidrenToSpawn + " workers");
 
       // spawn n workers
-      for (var i = 0; i < numCPUs; i++) {
-        var child = cluster.fork();
-        self.workers[child.process.pid] = child;
+      for (var i = 0; i < numChidrenToSpawn; i++) {
+        (function(){
+          var child = cluster.fork();
+          
+          child.once('message',function(message){
+            if(message == 'ready'){
+            
+              self.workers[child.process.pid] = child;
+              logger.debug('initial child ready');
+            }
+          });
+
+        })();
       }
 
       // Add application kill signals.
@@ -113,13 +106,13 @@ Main.prototype.start = function(callback) {
 
         process.on(sig, function() {
 
-          _.each(self.workers, function(child) {
+          _.each(cluster.workers, function(child) {
             child.destroy();  // send suicide signal
           });
 
           // create function to check self all workers are dead.
           var checkExit = function() {
-            if (_.keys(self.workers).length == 0) {
+            if (_.keys(cluster.workers).length == 0) {
               process.exit();
             }
             else {
@@ -129,32 +122,40 @@ Main.prototype.start = function(callback) {
 
           // poll the master and exit when children are all gone.
           setImmediate(checkExit);
-
         });
+      });
 
+      cluster.on('disconnect',function(worker) {
+        delete self.workers[worker.process.pid];
+        logger.info('worker '+worker.process.pid+' disconnected');
       });
 
       cluster.on('exit', function(worker) {
-        logger.error('Worker exited unexpectedly. Spawning new worker', worker);
 
         // remove the child from the tracked running list..
         delete self.workers[worker.process.pid];
 
         // if it purposely destroyed itself, then do no re-spawn.
-        // Otherwise, it was killed for some external reason and should create a new child in the pool.
-        if (!worker.suicide) {
-
+        if(!worker.suicide){
+          logger.error('Worker exited unexpectedly. Spawning new worker');  
           // spawn new child
           var child = cluster.fork();
-          self.workers[child.process.pid] = child;
-        }
 
+          child.on('message',function(message){
+          if(message == 'ready'){
+            logger.debug('respawned child ready id: ' + child.process.pid);
+            self.workers[child.process.pid] = child;
+          }
+        });
+        }
       });
 
       self.createMaster();
 
-    } else {
-      logger.info("Worker ID", process.pid);
+    } 
+    else {
+      //cluser is on, and this is a worker!
+      logger.info("new worker Worker id: "+process.pid);
 
       try {
         self.worker = new mixdownWorker(mixdown);
@@ -163,9 +164,9 @@ Main.prototype.start = function(callback) {
         typeof(callback) === 'function' ? callback(e, self) : null;
       }
     }
-
   }
   else {
+    //cluster isn't running so create a master server.
     self.createMaster();
   }
 };
