@@ -44,7 +44,7 @@ Main.prototype.createMaster = function() {
   var self = this;
 
   // start server.  Sets up server, port, and starts the app.
-  self.master = new mixdownMaster(self.workers, self.options);
+  self.master = new mixdownMaster(self.workers, self.options, self.mixdown);
 
   self.master.start(function(err, data) {
     if (err) {
