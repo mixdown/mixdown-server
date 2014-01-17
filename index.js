@@ -40,7 +40,7 @@ var logServerInfo = function(server,message) {
   logger.info(message || 'Server Information. ', server.server.address(), hmap);
 };
 
-Main.prototype.createMaster = function() {
+Main.prototype.createMaster = function(callback) {
   var self = this;
 
   // start server.  Sets up server, port, and starts the app.
@@ -55,6 +55,7 @@ Main.prototype.createMaster = function() {
       self.socket = data.socket;
       self.server = data.server;
       logServerInfo(self, 'Server started successfully.');
+      debugger;
       typeof(callback) === 'function' ? callback(err, self) : null;
     }
   });
@@ -150,7 +151,7 @@ Main.prototype.start = function(callback) {
         }
       });
 
-      self.createMaster();
+      self.createMaster(callback);
 
     } 
     else {
@@ -167,7 +168,7 @@ Main.prototype.start = function(callback) {
   }
   else {
     //cluster isn't running so create a master server.
-    self.createMaster();
+    self.createMaster(callback);
   }
 };
 
