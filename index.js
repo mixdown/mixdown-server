@@ -55,7 +55,6 @@ Main.prototype.createMaster = function(callback) {
       self.socket = data.socket;
       self.server = data.server;
       logServerInfo(self, 'Server started successfully.');
-      debugger;
       typeof(callback) === 'function' ? callback(err, self) : null;
     }
   });
