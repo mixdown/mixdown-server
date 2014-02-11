@@ -32,7 +32,6 @@ var Main = function(mixdown, options) {
 };
 
 var logServerInfo = function(server,message) {
-  logger.debug(server);
   var hmap = _.map(server.mixdown.apps, function(app){ 
     return _.pick(app, 'vhosts', 'id'); 
   });
