@@ -32,12 +32,13 @@ var Main = function(mixdown, options) {
 };
 
 var logServerInfo = function(server,message) {
-
+  logger.debug(server);
   var hmap = _.map(server.mixdown.apps, function(app){ 
     return _.pick(app, 'vhosts', 'id'); 
   });
 
-  logger.info(message || 'Server Information. ', server.server.address(), hmap);
+  var address = server.server && server.server.address();
+  logger.info(message || 'Server Information. ', address|| ' ', hmap);
 };
 
 Main.prototype.createMaster = function(callback) {
