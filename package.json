@@ -9,9 +9,8 @@
     "html"
   ],
   "author": {
-    "name": "Vast",
-    "email": "vastjs-dev@vast.com",
-    "web": "http://vastdevblog.vast.com/"
+    "name": "Tommy Messbauer",
+    "web": "http://www.github.com/tommymessbauer"
   },
   "license": "MIT",
   "repository": {
@@ -28,10 +27,8 @@
     "test": "node tests/main.js"
   },
   "dependencies": {
-    "lodash": "~2.2.0",
-    "optimist": "~0.6.0"
+    "lodash": "2.4.1",
+    "optimist": "^0.6.1"
   },
-  "devDependencies": {},
-  "optionalDependencies": {},
-  "homepage": "http://vastdevblog.vast.com/"
+  "devDependencies": {}
 }
